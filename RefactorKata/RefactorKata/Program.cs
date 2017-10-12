@@ -23,9 +23,11 @@ namespace RefactorKata
 
         private static IEnumerable<Product> GetProducts()
         {
-            using (var conn = new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"))
+            SqlCommand cmd;
+            using (var conn =
+                new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"))
             {
-                var cmd = conn.CreateCommand();
+                cmd = conn.CreateCommand();
                 cmd.CommandText = "Select * from Products";
                 cmd.CommandText = "Select * from Invoices";
             }
@@ -34,11 +36,15 @@ namespace RefactorKata
 
             var reader = cmd.ExecuteReader();
             var products = new List<Product>();
-
+            /* not sure whats going on in this last scope, but everything looks to check out. */
             while (reader.Read())
             {
-                
+                var prod = new Product {Name = reader["Name"].ToString()};
+                products.Add(prod);
             }
+
+            Console.WriteLine("Products Loaded!");
+            return products;
 
             /*
              * lost myself on IEnum, following along with c repo to explain what I do understand past IEnum
@@ -47,24 +53,26 @@ namespace RefactorKata
             /*
              * cmd.CommandText = "Select * from Invoices";
              */
-           /* SqlDataReader reader = cmd.ExecuteReader();
-            List<Product> products = new List<Product>();
-/*
-            //TODO: Replace with Dapper
-            while (reader.Read())
-            {
-                var prod = new Product();
-                Product.Name = reader["Name"].ToString();
-                products.Add(prod);
-            }
-            conn.Dispose();
-            Console.WriteLine("Products Loaded!");
-            for (int i = 0; i < products.Count; i++)
-            {
-                Console.WriteLine(products[i].name);
-            }*/
+            /* SqlDataReader reader = cmd.ExecuteReader();
+             List<Product> products = new List<Product>();
+ /*
+             //TODO: Replace with Dapper
+             while (reader.Read())
+             {
+                 var prod = new Product();
+                 Product.Name = reader["Name"].ToString();
+                 products.Add(prod);
+             }
+             conn.Dispose();
+             Console.WriteLine("Products Loaded!");
+             for (int i = 0; i < products.Count; i++)
+             {
+                 Console.WriteLine(products[i].name);
+             }*/
 
 
 
         }
+
     }
+}
